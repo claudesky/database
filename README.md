@@ -43,3 +43,15 @@ Adminer exposes its webserver on port **8080**.
 
 Any containers that need access to the database can simply be added to the `db` network created by the init script.
 
+```
+services:
+    my-app:
+        networks:
+            - default
+            - db
+
+networks:
+    db:
+        external:
+            name: db
+```
