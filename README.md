@@ -35,7 +35,7 @@ sudo ./init.sh
 Note:
 By default, the services do not publish any ports.
 
-You can use the add-site script if you are using claudesky/local-webserver to give the new container a subdomain on your localhost.
+You can use the add-site script if you are using [claudesky/local-webserver](https://github.com/claudesky/local-webserver) to give the new container a subdomain on your localhost.
 
 Adminer exposes its webserver on port **8080**.
 
