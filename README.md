@@ -38,3 +38,8 @@ By default, the services do not publish any ports.
 You can use the add-site script if you are using claudesky/local-webserver to give the new container a subdomain on your localhost.
 
 Adminer exposes its webserver on port **8080**.
+
+### Add containers to the `db` network
+
+Any containers that need access to the database can simply be added to the `db` network created by the init script.
+
