@@ -12,6 +12,8 @@ services:
   adminer:
     image: adminer
     restart: always
+    volumes:
+      - ./adminer.css:/var/www/html/adminer.css
     networks:
       - default
       - web
