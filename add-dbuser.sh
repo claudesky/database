@@ -5,9 +5,13 @@ SCRIPTNAME=$0
 function usage {
     cat << EOF
 
-Usage: $SCRIPTNAME [DBNAME]
+Usage: $SCRIPTNAME [-p] [DBNAME]
 
 A script to quickly add a new user and database.
+
+Options:
+  -p,  --password string    Specify a password for the new database
+                            user (default no password)
 
 EOF
 }
@@ -31,7 +35,44 @@ function checkRequirements {
 
 checkRequirements
 
+upassword=
+
+for arg do
+    shift
+    if [[ "$arg" == "--port" ]]; then
+        upassword=$1
+        echo "### Using password"
+        echo
+        shift
+        continue
+    fi
+    set -- "$@" "$arg"
+done
+
+while getopts ":p:" opt; do
+    case ${opt} in
+        p )
+            upassword=$OPTARG
+            echo "### Using password"
+            echo
+            ;;
+        \? )
+            echo "Error: Invalid option: -$OPTARG" >&2
+            exit 1
+            ;;
+        : )
+            echo "Error: Option -$OPTARG requires an argument" >&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+
 dbname=$1
+user_creation_string="create user $1;"
+if [[ upassword ]]; then
+user_creation_string="create user $1 identified by '$upassword';"
+fi
 
 echo "Enter database root password: "
 stty -echo
@@ -58,7 +99,7 @@ fi
 if [[ $EXISTS ]]; then
 
     docker-compose exec -T mariadb mysql -p$MYSQL_PASS -e "
-        create user $1;
+        $user_creation_string
         grant all privileges on $1.* TO '$1'@'%';
         flush privileges;
     "
@@ -67,7 +108,7 @@ else
 
     docker-compose exec -T mariadb mysql -p$MYSQL_PASS -e "
         create database $1;
-        create user $1;
+        $user_creation_string
         grant all privileges on $1.* TO '$1'@'%';
         flush privileges;
     "
