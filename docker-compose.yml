@@ -23,7 +23,6 @@ services:
 volumes:
   mariadb_data:
     external: true
-    name: mariadb_data
 
 networks:
   default:
